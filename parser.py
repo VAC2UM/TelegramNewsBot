@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import  codecs
 
 def parser(back_post_title):
     URL = "https://www.kinoafisha.info/news/"
@@ -25,29 +25,27 @@ def parser(back_post_title):
 
         return f"{title}\n\n{description}\n\n{link}"
     else:
-        return None, post
+        return None
 
 
-# main
-with open('last_title.txt', encoding='utf-8', mode='r') as back_post_title:
+# реализовать изменение title в txt файле при несовпадении
+with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
     last_title = back_post_title.read()
-    parser(last_title)
-    # реализовать изменение title в txt файле при несовпадении
 
-    # print(last_title)
-    # print(parser(last_title))
+    URL = "https://www.kinoafisha.info/news/"
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
+    post = soup.find('span', class_='newsV2_title').text.strip()
 
+    while True:
+        if post != last_title:
+            # бот выводит новый пост
+            print(parser(last_title))
 
-
-# back_post_title = ""
-# while True:
-#     post_text = parser(back_post_title)
-#     back_post_title = post_text[1]
-#
-#     if post_text[0] != None:
-#         print(post_text[0])
-
-
-# print(title + "\n")
-# print(description)
-# print(link)
+            with codecs.open('last_title.txt', 'w', 'utf-16') as f:
+                f.write(post)
+                f.close()
+            break
+        else:
+            break
+    back_post_title.close()

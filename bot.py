@@ -6,6 +6,7 @@ from os import environ
 import requests
 from bs4 import BeautifulSoup
 import time
+import codecs
 
 load_dotenv()
 
@@ -16,7 +17,27 @@ bot = telebot.TeleBot(token)
 
 @bot.message_handler(content_types=["text"])
 def commands(message):
-    bot.send_message(id_channel, message.text)
+    if message.text == "Старт":
+        with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
+            last_title = back_post_title.read()
+
+            URL = "https://www.kinoafisha.info/news/"
+            page = requests.get(URL)
+            soup = BeautifulSoup(page.content, "html.parser")
+            post = soup.find('span', class_='newsV2_title').text.strip()
+
+            # while True:
+            if post != last_title:
+                # бот выводит новый пост
+                bot.send_message(id_channel, parser(last_title))
+
+                with codecs.open('last_title.txt', 'w', 'utf-16') as f:
+                    f.write(post)
+                    f.close()
+                # break
+            # else:
+            #     break
+            back_post_title.close()
 
 
 def parser(back_post_title):
