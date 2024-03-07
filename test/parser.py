@@ -1,3 +1,5 @@
+import time
+
 import requests
 from bs4 import BeautifulSoup
 import  codecs
@@ -27,25 +29,27 @@ def parser(back_post_title):
     else:
         return None
 
-
 # реализовать изменение title в txt файле при несовпадении
-with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
-    last_title = back_post_title.read()
+while True:
+    with open('../last_title.txt', encoding='utf-16', mode='r') as back_post_title:
+        last_title = back_post_title.read()
 
-    URL = "https://www.kinoafisha.info/news/"
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
-    post = soup.find('span', class_='newsV2_title').text.strip()
+        URL = "https://www.kinoafisha.info/news/"
+        page = requests.get(URL)
+        soup = BeautifulSoup(page.content, "html.parser")
 
-    while True:
-        if post != last_title:
-            # бот выводит новый пост
-            print(parser(last_title))
+        post = soup.find('span', class_='newsV2_title').get_text(strip=True)
 
-            with codecs.open('last_title.txt', 'w', 'utf-16') as f:
-                f.write(post)
-                f.close()
-            break
-        else:
-            break
-    back_post_title.close()
+        while True:
+            if post != last_title:
+                # бот выводит новый пост
+                print(parser(last_title))
+
+                with codecs.open('../last_title.txt', 'w', 'utf-16') as f:
+                    f.write(post)
+                    f.close()
+                break
+            else:
+                break
+        back_post_title.close()
+    time.sleep(1800)
