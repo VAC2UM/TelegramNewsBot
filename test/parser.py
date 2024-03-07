@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import  codecs
+import codecs
 import time
 
 def parser(back_post_title):

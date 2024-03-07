@@ -14,10 +14,9 @@ token = environ.get('TOKEN')
 id_channel = environ.get('ID_CHANNEL')
 bot = telebot.TeleBot(token)
 
-
 @bot.message_handler(content_types=["text"])
 def commands(message):
-    while True:
+    if message.text == "Старт":
         with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
             last_title = back_post_title.read()
 
@@ -26,7 +25,6 @@ def commands(message):
             soup = BeautifulSoup(page.content, "html.parser")
             post = soup.find('span', class_='newsV2_title').text.strip()
 
-            # while True:
             if post != last_title:
                 # бот выводит новый пост
                 bot.send_message(id_channel, parser(last_title))
@@ -64,6 +62,5 @@ def parser(back_post_title):
         return f"{title}\n\n{description}\n\n{link}"
     else:
         return None, post
-
 
 bot.polling()
