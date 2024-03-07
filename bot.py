@@ -10,8 +10,8 @@ import codecs
 
 load_dotenv()
 
-token = "7040510992:AAErnLR5VjQXJ0Or5sKbO0Tgs3w4w3w0vHo"
-id_channel = "@vacuummovies"
+token = environ.get('TOKEN')
+id_channel = environ.get('ID_CHANNEL')
 bot = telebot.TeleBot(token)
 
 
