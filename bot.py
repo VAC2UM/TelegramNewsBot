@@ -10,8 +10,8 @@ import codecs
 
 load_dotenv()
 
-token = "7040510992:AAErnLR5VjQXJ0Or5sKbO0Tgs3w4w3w0vHo"
-id_channel = "@vacuummovies"
+token = environ.get('TOKEN')
+id_channel = environ.get('ID_CHANNEL')
 bot = telebot.TeleBot(token)
 
 
@@ -26,6 +26,7 @@ def commands(message):
             soup = BeautifulSoup(page.content, "html.parser")
             post = soup.find('span', class_='newsV2_title').text.strip()
 
+            # while True:
             if post != last_title:
                 # бот выводит новый пост
                 bot.send_message(id_channel, parser(last_title))
@@ -33,10 +34,10 @@ def commands(message):
                 with codecs.open('last_title.txt', 'w', 'utf-16') as f:
                     f.write(post)
                     f.close()
-            else:
-                print("Пост не обновили")
+                # break
+            # else:
+            #     break
             back_post_title.close()
-        time.sleep(1800)
 
 
 def parser(back_post_title):
