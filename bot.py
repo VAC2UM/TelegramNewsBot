@@ -18,7 +18,7 @@ bot = telebot.TeleBot(token)
 @bot.message_handler(content_types=["text"])
 def commands(message):
     while True:
-        with open('last_title.txt', encoding='utf-8', mode='r') as back_post_title:
+        with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
             last_title = back_post_title.read()
 
             URL = "https://www.kinoafisha.info/news/"
@@ -31,7 +31,7 @@ def commands(message):
                 # бот выводит новый пост
                 bot.send_message(id_channel, parser(last_title))
 
-                with codecs.open('last_title.txt', 'w', 'utf-8') as f:
+                with codecs.open('last_title.txt', 'w', 'utf-16') as f:
                     f.write(post)
                     f.close()
             else:
