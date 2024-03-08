@@ -14,9 +14,10 @@ token = environ.get('TOKEN')
 id_channel = environ.get('ID_CHANNEL')
 bot = telebot.TeleBot(token)
 
-@bot.message_handler(content_types=["text"])
-def commands(message):
-    if message.text == "Старт":
+
+# @bot.message_handler(content_types=["text"])
+def commands():
+    while True:
         with open('last_title.txt', encoding='utf-16', mode='r') as back_post_title:
             last_title = back_post_title.read()
 
@@ -26,14 +27,14 @@ def commands(message):
             post = soup.find('span', class_='newsV2_title').text.strip()
 
             if post != last_title:
-                # бот выводит новый пост
+                # bot print new post
                 bot.send_message(id_channel, parser(last_title))
 
                 with codecs.open('last_title.txt', 'w', 'utf-16') as f:
                     f.write(post)
                     f.close()
             else:
-                print("Пост не обновили")
+                print("Post has not updated")
             back_post_title.close()
         time.sleep(1800)
 
@@ -47,7 +48,7 @@ def parser(back_post_title):
     post = soup.find('span', class_='newsV2_title').text.strip()
 
     if post != back_post_title:
-        # ссылка на описание фильма
+        # link to film description
         link = soup.find('div', class_='newsV2_item').a.get('href')
 
         page2 = requests.get(link)
@@ -63,4 +64,6 @@ def parser(back_post_title):
     else:
         return None, post
 
-bot.polling()
+
+if __name__ == '__main__':
+    bot.polling(commands())
