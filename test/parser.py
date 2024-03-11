@@ -31,7 +31,7 @@ def parser(back_post_title):
 
 # реализовать изменение title в txt файле при несовпадении
 while True:
-    with open('../main/last_title.txt', encoding='utf-16', mode='r') as back_post_title:
+    with open('../main/last_title.txt', encoding='utf-8', mode='r', errors='ignore') as back_post_title:
         last_title = back_post_title.read()
 
         URL = "https://www.kinoafisha.info/news/"
@@ -45,7 +45,7 @@ while True:
                 # бот выводит новый пост
                 print(parser(last_title))
 
-                with codecs.open('../main/last_title.txt', 'w', 'utf-16') as f:
+                with codecs.open('../main/last_title.txt', 'w', 'utf-8', errors='ignore') as f:
                     f.write(post)
                     f.close()
                 break
