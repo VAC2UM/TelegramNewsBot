@@ -3,7 +3,27 @@ from bs4 import BeautifulSoup
 import codecs
 import time
 
-def parser(back_post_title):
+
+def Letterboxd_parser():
+    URL = "https://letterboxd.com/vac2um/films/diary/"
+    response = requests.get(URL)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        review_containers = soup.find_all('li', class_='film-detail viewing-poster-container')
+
+        # Extract the reviews
+        for container in review_containers:
+            images = container.find('img')
+            print(images)
+            review_text = container.find('div', class_='film-detail-content').get_text(strip=True)
+            print(review_text, sep="\n")
+    else:
+        print(f"Failed to retrieve the webpage, status code: {response.status_code}")
+
+
+def KinoAfisha_parser(back_post_title):
     URL = "https://www.kinoafisha.info/news/"
 
     page = requests.get(URL)
@@ -43,7 +63,7 @@ while True:
         while True:
             if post != last_title:
                 # бот выводит новый пост
-                print(parser(last_title))
+                print(KinoAfisha_parser(last_title))
 
                 with codecs.open('../main/last_title.txt', 'w', 'utf-8', errors='ignore') as f:
                     f.write(post)
@@ -53,3 +73,6 @@ while True:
                 break
         back_post_title.close()
     time.sleep(1800)
+
+
+# Letterboxd_parser()
