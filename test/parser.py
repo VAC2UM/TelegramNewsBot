@@ -4,25 +4,6 @@ import codecs
 import time
 
 
-def Letterboxd_parser():
-    URL = "https://letterboxd.com/vac2um/films/diary/"
-    response = requests.get(URL)
-
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        review_containers = soup.find_all('li', class_='film-detail viewing-poster-container')
-
-        # Extract the reviews
-        for container in review_containers:
-            images = container.find('img')
-            print(images)
-            review_text = container.find('div', class_='film-detail-content').get_text(strip=True)
-            print(review_text, sep="\n")
-    else:
-        print(f"Failed to retrieve the webpage, status code: {response.status_code}")
-
-
 def KinoAfisha_parser(back_post_title):
     URL = "https://www.kinoafisha.info/news/"
 
@@ -48,31 +29,48 @@ def KinoAfisha_parser(back_post_title):
     else:
         return None
 
+def Letterboxd_parser():
+    URL = "https://letterboxd.com/vac2um/films/diary/"
+    response = requests.get(URL)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        link = soup.find('h3', class_='headline-3 prettify').a.get('href')
+
+        page2 = requests.get("https://letterboxd.com" + link)
+        soup2 = BeautifulSoup(page2.content, "html.parser")
+
+        review = soup2.findAll('div', class_='review body-text -prose -hero -loose')
+        print(review)
+    else:
+        print(f"Failed to retrieve the webpage, status code: {response.status_code}")
+
 
 # реализовать изменение title в txt файле при несовпадении
-while True:
-    with open('../main/last_title.txt', encoding='utf-8', mode='r', errors='ignore') as back_post_title:
-        last_title = back_post_title.read()
+# while True:
+#     with open('../main/last_title.txt', encoding='utf-8', mode='r', errors='ignore') as back_post_title:
+#         last_title = back_post_title.read()
+#
+#         URL = "https://www.kinoafisha.info/news/"
+#         page = requests.get(URL)
+#         soup = BeautifulSoup(page.content, "html.parser")
+#
+#         post = soup.find('span', class_='newsV2_title').get_text(strip=True)
+#
+#         while True:
+#             if post != last_title:
+#                 # бот выводит новый пост
+#                 print(KinoAfisha_parser(last_title))
+#
+#                 with codecs.open('../main/last_title.txt', 'w', 'utf-8', errors='ignore') as f:
+#                     f.write(post)
+#                     f.close()
+#                 break
+#             else:
+#                 break
+#         back_post_title.close()
+#     time.sleep(1800)
 
-        URL = "https://www.kinoafisha.info/news/"
-        page = requests.get(URL)
-        soup = BeautifulSoup(page.content, "html.parser")
 
-        post = soup.find('span', class_='newsV2_title').get_text(strip=True)
-
-        while True:
-            if post != last_title:
-                # бот выводит новый пост
-                print(KinoAfisha_parser(last_title))
-
-                with codecs.open('../main/last_title.txt', 'w', 'utf-8', errors='ignore') as f:
-                    f.write(post)
-                    f.close()
-                break
-            else:
-                break
-        back_post_title.close()
-    time.sleep(1800)
-
-
-# Letterboxd_parser()
+Letterboxd_parser()
