@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import codecs
 import time
+import re
 
 
 def KinoAfisha_parser(back_post_title):
@@ -41,7 +42,12 @@ def Letterboxd_parser():
         page2 = requests.get("https://letterboxd.com" + link)
         soup2 = BeautifulSoup(page2.content, "html.parser")
 
-        review = soup2.findAll('div', class_='review body-text -prose -hero -loose')
+        review = soup2.find('div', class_='review').get_text(strip=True)
+
+        author = "V A C U U M’s review published on Letterboxd:"
+
+        review = review.replace(author,"")
+        review = re.sub(r'\.(?=[^\s])', '.\n', review)
         print(review)
     else:
         print(f"Failed to retrieve the webpage, status code: {response.status_code}")
