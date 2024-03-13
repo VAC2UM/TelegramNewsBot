@@ -137,7 +137,7 @@ def Letterboxd_parser(back_review):
 
         author = "V A C U U M’s review published on Letterboxd:"
 
-        mark = soup_my_page.find('span',class_='rating rated-8').get_text().strip()
+        mark = soup_my_page.find('p', class_='poster-viewingdata').get_text().strip()
         switch = {
             "★★★★★": 10,
             "★★★★½": 9,
