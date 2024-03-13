@@ -60,7 +60,7 @@ def commands():
                     break
                 else:
                     print("Review has not updated")
-                back_review_title.close()
+            back_review_title.close()
         time.sleep(1800)
     # while True:
     #     with open('last_title.txt', encoding='utf-8', mode='r', errors='ignore') as back_post_title:
