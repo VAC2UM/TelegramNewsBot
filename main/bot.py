@@ -50,17 +50,17 @@ def commands():
 
             review = soup.find('h3', class_='headline-3 prettify').a
             review_text = review.text.strip()
+            while True:
+                if review_text != last_review:
+                    bot.send_message(id_channel, Letterboxd_parser(last_review))
 
-            if review_text != last_review:
-                bot.send_message(id_channel, Letterboxd_parser(last_review))
-
-                with codecs.open('last_review.txt', 'w', 'utf-8', errors='ignore') as f:
-                    f.write(review_text)
-                    f.close()
-                break
-            else:
-                print("Review has not updated")
-                break
+                    with codecs.open('last_review.txt', 'w', 'utf-8', errors='ignore') as f:
+                        f.write(review_text)
+                        f.close()
+                    break
+                else:
+                    print("Review has not updated")
+                back_review_title.close()
         time.sleep(1800)
     # while True:
     #     with open('last_title.txt', encoding='utf-8', mode='r', errors='ignore') as back_post_title:
