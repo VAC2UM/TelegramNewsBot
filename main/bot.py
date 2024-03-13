@@ -60,6 +60,7 @@ def commands():
                     break
                 else:
                     print("Review has not updated")
+                    break
             back_review_title.close()
         time.sleep(1800)
     # while True:
