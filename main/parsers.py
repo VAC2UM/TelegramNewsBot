@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import codecs
 import re
+import pyshorteners
 
 
 class Parsers:
@@ -12,6 +13,9 @@ class Parsers:
         self.id_channel = id_channel
         self.URL_KinoAfisha = URL_KinoAfisha
         self.URL_diary = URL_diary
+
+    def shorten_url(self, url):
+        return pyshorteners.Shortener().clckru.short(url)
 
     def commands(self):
         while True:
@@ -78,7 +82,9 @@ class Parsers:
             title = second_post.find("h1", class_="article_title").text.strip()
             description = post_description.find("p").text.strip()
 
-            return f"{title}\n\n{description}\n\n{link}"
+            link_formatted = format(self.shorten_url(link))
+
+            return f"{title}\n\n{description}\n\n{link_formatted}"
         else:
             return None, post
 

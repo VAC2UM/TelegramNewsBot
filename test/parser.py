@@ -1,10 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 import codecs
-import time
+import pyshorteners
 import re
 
 URL_diary = "https://letterboxd.com/vac2um/films/diary/"
+
+
+def shorten_url(url):
+    return pyshorteners.Shortener().clckru.short(url)
 
 
 def KinoAfisha_parser(back_post_title):
@@ -28,9 +32,11 @@ def KinoAfisha_parser(back_post_title):
         title = second_post.find("h1", class_="article_title").text.strip()
         description = post_description.find("p").text.strip()
 
+        link = format(shorten_url(link))
         return f"{title}\n\n{description}\n\n{link}"
     else:
         return None
+
 
 def Letterboxd_parser(back_review):
     URL_my_page = "https://letterboxd.com/Vac2um/"
@@ -73,7 +79,7 @@ def Letterboxd_parser(back_review):
             "½": 1,
         }
 
-        review = review.replace(author,"")
+        review = review.replace(author, "")
         review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
         return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"

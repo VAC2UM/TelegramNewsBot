@@ -1,7 +1,6 @@
 import telebot
 from dotenv import load_dotenv
 from os import environ
-import time
 from parsers import Parsers
 
 load_dotenv()
