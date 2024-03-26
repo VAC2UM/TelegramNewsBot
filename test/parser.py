@@ -57,10 +57,15 @@ def Letterboxd_parser(back_review):
 
         title_tag = soup2.find('span', class_='film-title-wrapper').a
         title_text = title_tag.text.strip()
-        # title_link = title_tag['href']
 
+        # --------------------------------------------------------------
         year_tag = soup2.find('small', class_='metadata').a
-        year_text = year_tag.text.strip()
+        if year_tag is not None:
+            year_text = year_tag.text.strip()
+            print('Year:', year_text)
+        else:
+            print('Year not found')
+        # --------------------------------------------------------------
 
         author = "V A C U U M’s review published on Letterboxd:"
 
@@ -82,7 +87,8 @@ def Letterboxd_parser(back_review):
         review = review.replace(author, "")
         review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
-        return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+        return f"{title_text + ' '}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+        # return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
     else:
         print(f"Failed to retrieve the webpage, status code: {response.status_code}")
 

@@ -109,8 +109,14 @@ class Parsers:
             title_text = title_tag.text.strip()
             # title_link = title_tag['href']
 
+            # --------------------------------------------------------------
             year_tag = soup2.find('small', class_='metadata').a
-            year_text = year_tag.text.strip()
+            if year_tag is not None:
+                year_text = year_tag.text.strip()
+                print('Year:', year_text)
+            else:
+                print('Year not found')
+            # --------------------------------------------------------------
 
             author = "V A C U U M’s review published on Letterboxd:"
 
