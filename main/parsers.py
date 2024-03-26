@@ -137,6 +137,7 @@ class Parsers:
             review = review.replace(author, "")
             review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
-            return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+            return f"{title_text + ' '}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+            # return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
         else:
             print(f"Failed to retrieve the webpage, status code: {response.status_code}")
