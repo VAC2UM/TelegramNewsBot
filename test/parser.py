@@ -33,7 +33,7 @@ def KinoAfisha_parser(back_post_title):
         description = post_description.find("p").text.strip()
 
         link = format(shorten_url(link))
-        return f"{title}\n\n{description}\n\n{link}"
+        return f"{title}\n\n{description}{'#новости'}\n\n{link}"
     else:
         return None
 
@@ -49,6 +49,8 @@ def Letterboxd_parser(back_review):
         soup_my_page = BeautifulSoup(response_my_page.text, "html.parser")
 
         link = soup.find('h3', class_='headline-3 prettify').a.get('href')
+        review_link = "https://letterboxd.com"+link
+        review_link = format(shorten_url(review_link))
 
         page2 = requests.get("https://letterboxd.com" + link)
         soup2 = BeautifulSoup(page2.content, "html.parser")
@@ -87,8 +89,7 @@ def Letterboxd_parser(back_review):
         review = review.replace(author, "")
         review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
-        return f"{title_text + ' '}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
-        # return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+        return f"{title_text + ' '}\n\n{review}{review_link}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
     else:
         print(f"Failed to retrieve the webpage, status code: {response.status_code}")
 
