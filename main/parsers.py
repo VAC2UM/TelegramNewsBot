@@ -84,7 +84,7 @@ class Parsers:
 
             link_formatted = format(self.shorten_url(link))
 
-            return f"{title}\n\n{description}{'#новости'}\n\n{link_formatted}"
+            return f"{title}\n\n{description}\n{'#новости'}\n\n{link_formatted}"
         else:
             return None, post
 

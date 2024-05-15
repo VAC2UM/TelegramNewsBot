@@ -33,7 +33,7 @@ def KinoAfisha_parser(back_post_title):
         description = post_description.find("p").text.strip()
 
         link = format(shorten_url(link))
-        return f"{title}\n\n{description}{'#новости'}\n\n{link}"
+        return f"{title}\n\n{description}\n{'#новости'}\n\n{link}"
     else:
         return None
 
