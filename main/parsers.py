@@ -99,6 +99,8 @@ class Parsers:
             soup_my_page = BeautifulSoup(response_my_page.text, "html.parser")
 
             link = soup.find('h3', class_='headline-3 prettify').a.get('href')
+            review_link = "https://letterboxd.com" + link
+            review_link = format(self.shorten_url(review_link))
 
             page2 = requests.get("https://letterboxd.com" + link)
             soup2 = BeautifulSoup(page2.content, "html.parser")
@@ -107,7 +109,6 @@ class Parsers:
 
             title_tag = soup2.find('span', class_='film-title-wrapper').a
             title_text = title_tag.text.strip()
-            # title_link = title_tag['href']
 
             # --------------------------------------------------------------
             year_tag = soup2.find('small', class_='metadata').a
@@ -121,6 +122,7 @@ class Parsers:
             author = "V A C U U M’s review published on Letterboxd:"
 
             mark = soup_my_page.find('p', class_='poster-viewingdata').get_text().strip()
+
             switch = {
                 "★★★★★": 10,
                 "★★★★½": 9,
@@ -137,7 +139,6 @@ class Parsers:
             review = review.replace(author, "")
             review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
-            return f"{title_text + ' '}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
-            # return f"{title_text + ' '}{year_text}\n\n{review}\n\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+            return f"{title_text + ' '}\n\n{review}{review_link}\n\n{'#оценка'}\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
         else:
             print(f"Failed to retrieve the webpage, status code: {response.status_code}")
