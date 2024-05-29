@@ -3,12 +3,16 @@ from bs4 import BeautifulSoup
 import codecs
 import pyshorteners
 import re
+from deep_translator import GoogleTranslator
 
 URL_diary = "https://letterboxd.com/vac2um/films/diary/"
 
 
 def shorten_url(url):
     return pyshorteners.Shortener().clckru.short(url)
+
+def translate_text(text, dest_lang='ru'):
+    return GoogleTranslator(source='auto', target=dest_lang).translate(text)
 
 
 def KinoAfisha_parser(back_post_title):
@@ -49,25 +53,23 @@ def Letterboxd_parser(back_review):
         soup_my_page = BeautifulSoup(response_my_page.text, "html.parser")
 
         link = soup.find('h3', class_='headline-3 prettify').a.get('href')
-        review_link = "https://letterboxd.com"+link
+        review_link = "https://letterboxd.com" + link
         review_link = format(shorten_url(review_link))
 
         page2 = requests.get("https://letterboxd.com" + link)
         soup2 = BeautifulSoup(page2.content, "html.parser")
 
         review = soup2.find('div', class_='review').get_text(strip=True)
+        filmLink = soup2.find('span', class_='film-title-wrapper').a.get('href')
+
+        film_page = requests.get("https://letterboxd.com" + filmLink)
+        film_page_soup = BeautifulSoup(film_page.content, "html.parser")
+
+        description = film_page_soup.find('div', class_='truncate').text.strip()
+        description = translate_text(description)
 
         title_tag = soup2.find('span', class_='film-title-wrapper').a
         title_text = title_tag.text.strip()
-
-        # --------------------------------------------------------------
-        year_tag = soup2.find('small', class_='metadata').a
-        if year_tag is not None:
-            year_text = year_tag.text.strip()
-            print('Year:', year_text)
-        else:
-            print('Year not found')
-        # --------------------------------------------------------------
 
         author = "V A C U U M’s review published on Letterboxd:"
 
@@ -89,7 +91,19 @@ def Letterboxd_parser(back_review):
         review = review.replace(author, "")
         review = re.sub(r'\.(?=[^\s])', '.\n', review)
 
-        return f"{title_text + ' '}\n\n{review}{review_link}\n\n{'#оценка'}\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+        noReview = "There is no review for this diary entry"
+
+        diaryURL = "https://letterboxd.com/vac2um/films/diary/"
+        diaryResponse = requests.get(diaryURL)
+        diarySoup = BeautifulSoup(diaryResponse.text, "html.parser")
+        year_tag = diarySoup.find('td', class_='td-released center')
+        year_text = year_tag.text.strip()
+
+        # Если отзыва нет
+        if noReview in review:
+            return f"{title_text + ' '}{year_text}\n\n{description}\n\n{review_link}\n\n{'#оценка'}\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
+
+        return f"{title_text + ' '}{year_text}\n\n{description}\n\n{'#отзыв'}\n{review}\n{review_link}\n\n{'#оценка'}\n{'Моя оценка: '}{switch.get(mark)}{'/10'}"
     else:
         print(f"Failed to retrieve the webpage, status code: {response.status_code}")
 
